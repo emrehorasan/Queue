@@ -1,6 +1,6 @@
 ﻿using Queue.Entities;
 
-namespace Queue.Consumer.ElasticSearch
+namespace Queue.Consumer.Mongo.Products
 {
     public class Product : IEntity
     {

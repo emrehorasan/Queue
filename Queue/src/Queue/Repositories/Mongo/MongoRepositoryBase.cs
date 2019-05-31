@@ -1,8 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using Queue.Entities;
+using System.Threading.Tasks;
 
 namespace Queue.Repositories.Mongo
 {
@@ -17,16 +15,7 @@ namespace Queue.Repositories.Mongo
 
         public Task Insert<TEntiy>(TEntity entity)
         {
-            try
-            {
-                return Collection.InsertOneAsync(entity);
-
-            }
-            catch (Exception ex)
-            {
-                //todo: handle exception
-                throw ex;
-            }
+           return Collection.InsertOneAsync(entity);
         }
 
         public async Task<TEntity> Get(int id)

@@ -14,15 +14,7 @@ namespace Queue.Repositories.Elastic
         }
         public Task Insert<TEntiy>(TEntity entity)
         {
-            try
-            {
-                return _client.IndexDocumentAsync(entity);
-            }
-            catch (Exception ex)
-            {
-                //todo: handle exception
-                throw ex;
-            }
+            return _client.IndexDocumentAsync(entity);
         }
 
         public Task<TEntity> Get(int id)

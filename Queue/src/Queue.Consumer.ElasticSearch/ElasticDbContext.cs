@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Nest;
+using Queue.Consumer.ElasticSearch.Products;
 using Queue.Repositories.Elastic;
 
 namespace Queue.Consumer.ElasticSearch

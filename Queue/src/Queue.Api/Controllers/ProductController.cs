@@ -9,6 +9,8 @@ namespace Queue.Api.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
+        #region .ctor
+
         private readonly IProductService _productService;
 
         public ProductController(IProductService productService)
@@ -16,22 +18,17 @@ namespace Queue.Api.Controllers
             _productService = productService;
         }
 
+
+            #endregion
+
         // GET api/product?query=abc
         [HttpGet]
         public async Task<IActionResult> Get(string query) => Ok(await _productService.SearchAsync(query));
-
         // GET api/product/123
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAsync(int id)
-        {
-            return Ok(await _productService.GetAsync(id));
-        }
-
+        public async Task<IActionResult> GetAsync(int id) => Ok(await _productService.GetAsync(id));
         // POST api/product
         [HttpPost]
-        public void Post([FromBody] Product model)
-        {
-            _productService.Create(model);
-        }
+        public void Post([FromBody] Product model) => _productService.Create(model);
     }
 }
