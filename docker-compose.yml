@@ -1,0 +1,97 @@
+version: '3.7'
+services:
+  elastic-search:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
+    container_name: elastic-search
+    environment:
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - qnet
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - qnet
+  rabbit:
+    image: "rabbitmq:3-management"
+    hostname: "rabbit"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    labels:
+      NAME: "rabbitmq"
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:15672"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+    networks:
+      - qnet
+  api:
+    image: queue.api
+    restart: always
+    build:
+      context: ./Queue
+      dockerfile: Dockerfile
+    ports:
+        - "5000:5000"
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Staging
+    depends_on:
+        - mongo
+        - rabbit
+        - elastic-search
+    networks:
+        - qnet
+  consumer-mongo:
+    image: queue.mongo
+    restart: always
+    build:
+      context: ./Queue
+      dockerfile: Dockerfile-consumer-mongo
+    ports:
+        - "5002:5002"
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Staging
+    depends_on:
+        - mongo
+        - rabbit
+        - elastic-search
+    links:
+        - rabbit
+    networks:
+        - qnet
+  consumer-elastic:
+    image: queue.elastic
+    restart: always
+    build:
+      context: ./Queue
+      dockerfile: Dockerfile-consumer-elastic
+    ports:
+        - "5001:5001"
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Staging
+    depends_on:
+        - mongo
+        - rabbit
+        - elastic-search
+    links:
+        - rabbit
+    networks:
+        - qnet
+volumes:
+  es_data:
+    driver: local
+
+networks:
+  qnet:
